@@ -1,14 +1,12 @@
 # main.py
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
-from typing import Optional
 import os
 import pandas as pd
 import io
 
 from pdf_processor import extract_text_from_pdf, save_uploaded_file_temp, cleanup_temp_file
-# Removido SERVICE_ACCOUNT_FILE da importação de config
-from google_sheets_integrator import get_google_sheet_data # Já foi modificado para não precisar de filename
+from google_sheets_integrator import get_google_sheet_data
 from ai_analyzer import initialize_vertex_ai, extract_requirements_with_gemini, cross_reference_assets
 from config import GOOGLE_CLOUD_PROJECT_ID, GOOGLE_CLOUD_LOCATION, GOOGLE_SHEET_URL, GOOGLE_SHEET_TAB_NAME
 
@@ -30,13 +28,13 @@ async def startup_event():
 
 @app.post("/analyze_edital/")
 async def analyze_edital_endpoint(
-    edital_file: UploadFile = File(..., description="Arquivo do edital (PDF ou DOCX)."),
-    google_sheet_url: Optional[str] = Form(GOOGLE_SHEET_URL, description="URL da planilha de ativos do Google Sheets."),
-    google_sheet_tab_name: Optional[str] = Form(GOOGLE_SHEET_TAB_NAME, description="Nome da aba na planilha do Google Sheets.")
+    edital_file: UploadFile = File(..., description="Arquivo do edital (PDF ou DOCX).")
+    # Removidos google_sheet_url e google_sheet_tab_name como parâmetros de Form
 ):
     """
     Endpoint para analisar um edital.
-    Recebe um arquivo de edital (PDF/DOCX) e uma URL de planilha do Google Sheets.
+    Recebe um arquivo de edital (PDF/DOCX).
+    A URL da planilha e o nome da aba são lidos das variáveis de ambiente do Cloud Run.
     Retorna uma análise estratégica e um mapa de atendimento.
     """
     
@@ -59,10 +57,10 @@ async def analyze_edital_endpoint(
         if not edital_text.strip():
             raise HTTPException(status_code=400, detail="Não foi possível extrair texto do edital. O arquivo pode estar vazio ou ilegível.")
 
-        # 2. Carregar dados da planilha de ativos
+        # 2. Carregar dados da planilha de ativos das variáveis de ambiente
         try:
-            # AQUI: Não passamos o SERVICE_ACCOUNT_FILE
-            ativos_df = get_google_sheet_data(google_sheet_url, google_sheet_tab_name)
+            # Usamos as variáveis de ambiente importadas de config.py
+            ativos_df = get_google_sheet_data(GOOGLE_SHEET_URL, GOOGLE_SHEET_TAB_NAME)
             if ativos_df.empty:
                 print("Aviso: Planilha de ativos vazia ou não pôde ser carregada. Apenas extração de requisitos será feita.")
         except Exception as e:
@@ -126,7 +124,6 @@ async def analyze_edital_endpoint(
 #     # e sua conta de usuário deve ter as permissões necessárias (Vertex AI User, Sheets Reader)
 #     os.environ["GOOGLE_CLOUD_PROJECT_ID"] = "seu-projeto-id"
 #     os.environ["GOOGLE_CLOUD_LOCATION"] = "us-central1" # Ou sua região para Gemini
-#     # Opcional, se quiser testar com valores fixos sem Forms:
-#     # os.environ["GOOGLE_SHEET_URL"] = "https://docs.google.com/spreadsheets/d/..."
-#     # os.environ["GOOGLE_SHEET_TAB_NAME"] = "DataFunction"
+#     os.environ["GOOGLE_SHEET_URL"] = "https://docs.google.com/spreadsheets/d/13hwbIhqHSqcF8oPmCs8OYo3KY732APIVmKRfeBf9BtM/edit?gid=1116222026#gid=1116222026"
+#     os.environ["GOOGLE_SHEET_TAB_NAME"] = "DataFunction"
 #     uvicorn.run(app, host="0.0.0.0", port=8000)

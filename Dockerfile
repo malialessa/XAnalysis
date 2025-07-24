@@ -1,6 +1,5 @@
 # Dockerfile
 # Use uma imagem base Python otimizada para Cloud Run
-# Altere 'buster' para 'bookworm' (versão estável mais recente do Debian)
 FROM python:3.10-slim-bookworm 
 
 # Instale Tesseract OCR e suas dependências
@@ -22,6 +21,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copie o restante do código da aplicação para o diretório de trabalho
 COPY . .
+
+# --- ETAPA DE DEBUG TEMPORÁRIA ---
+# Esta linha listará o conteúdo do diretório /app no log do build.
+# Remova-a após confirmar que seus arquivos estão sendo copiados corretamente.
+RUN ls -l /app
+# --- FIM DA ETAPA DE DEBUG ---
 
 # Exponha a porta que a aplicação FastAPI vai rodar
 ENV PORT 8080
