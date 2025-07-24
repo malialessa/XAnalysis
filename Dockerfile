@@ -1,6 +1,7 @@
 # Dockerfile
 # Use uma imagem base Python otimizada para Cloud Run
-FROM python:3.10-slim-buster
+# Altere 'buster' para 'bookworm' (versão estável mais recente do Debian)
+FROM python:3.10-slim-bookworm 
 
 # Instale Tesseract OCR e suas dependências
 RUN apt-get update && apt-get install -y \
