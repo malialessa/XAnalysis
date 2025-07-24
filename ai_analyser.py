@@ -17,7 +17,7 @@ def extract_requirements_with_gemini(edital_text: str) -> dict:
     """
     Extrai informações estruturadas de requisitos do edital usando o modelo Gemini.
     """
-    model = GenerativeModel("gemini-2.5-flash") # Ou "gemini-1.0-pro"
+    model = GenerativeModel("gemini-1.5-flash-001") # Ou "gemini-1.0-pro"
 
     # Prompt mais robusto e com exemplos para guiar a extração
     prompt = f"""
@@ -256,7 +256,7 @@ def cross_reference_assets(extracted_requirements: dict, assets_df: pd.DataFrame
 
 # Exemplo de uso (para teste local)
 if __name__ == "__main__":
-    from config import GOOGLE_CLOUD_PROJECT_ID, GOOGLE_CLOUD_LOCATION, GOOGLE_SHEET_URL, GOOGLE_SHEET_TAB_NAME, SERVICE_ACCOUNT_FILE
+    from config import GOOGLE_CLOUD_PROJECT_ID, GOOGLE_CLOUD_LOCATION, GOOGLE_SHEET_URL, GOOGLE_SHEET_TAB_NAME
     from google_sheets_integrator import get_google_sheet_data
     import os
 
@@ -266,53 +266,56 @@ if __name__ == "__main__":
     # Simular texto do edital (use um trecho relevante dos seus PDFs)
     sample_edital_text = """
     2.1. Registro de preço para contratação de empresa especializada em fornecimento
- de créditos e em prestação de serviços de suporte técnico continuado,
- desenvolvimento e manutenção de soluções e transferência de conhecimento sob
- demanda, na nuvem pública Google Cloud Plataform (GCP), pelo período de 36 (trinta
- e seis) meses, conforme especificações constantes no Edital do Pregão Eletrônico nº
- 04/2024 e seus anexos.
- 6.1.3 Qualificação técnica
- 6.1.3.1. A licitante deverá apresentar Atestado(s) de capacidade técnica de
- fornecido(s) por pessoa jurídica de direito público ou privado, que comprove(m) que a
- licitante já forneceu o serviço especializado no fornecimento de créditos de nuvem
- pública Google Cloud Plataform (GCP) pelo período mínimo de 12 meses.
- 6.1.3.2. Para fins da comprovação de aptidão para execução de serviço de
- complexidade tecnológica e operacional equivalente ou superior com o objeto desta
- contratação, os atestados deverão dizer respeito a contratos executados com vigência
- mínima de doze meses, por meio da apresentação de certidões ou atestados, por
- pessoas jurídicas de direito público ou privado, com as seguintes características
- mínimas:
- a) Demonstração de provimento de subscrições de serviços Google Cloud;
- b) Demonstração de execução de pelo menos um serviço especializado na
- plataforma Google Cloud Platform,
- c) O gerenciamento e a operação de instâncias de máquinas virtuais e de
- instâncias de banco de dados em ambiente de nuvem pública Google
- Cloud;
- g) Migração de pelo menos 1 (um) banco de dados legado, de ambiente on-
- premise, para um banco de dados gerenciado nativo de um provedor de
- nuvem pública.
- h) Volume mínimo de 1.000.000 (um milhão) de unidades de consumo em
- nuvem ou moeda equivalente (R$, USN, CSN, USIN).
- Deverá ser
- comprovada execução do montante mínimo informado, sendo vetadas
- apresentações apenas de valores contratuais totais.
- 6.1.5. Caso não seja o fabricante, a LICITANTE deverá apresentar documento
- que comprove estar autorizada e credenciada a comercializar os produtos
- disponíveis da Google Cloud Plataform (GCP), sendo um "premier partner".
- 6.1.6. Declaração que detém a quantidade mínima e profissionais em seu quadro
- ou prestadores de serviço certificados com o objetivo de garantir o mínimo de
- qualidade na prestação de serviços em relação ao provedor de nuvem
- oferecido (comprovada na assinatura do contrato): no mínimo 2 (dois)
- profissionais com certificação de arquitetura em nuvem;
+    de créditos e em prestação de serviços de suporte técnico continuado,
+    desenvolvimento e manutenção de soluções e transferência de conhecimento sob
+    demanda, na nuvem pública Google Cloud Plataform (GCP), pelo período de 36 (trinta
+    e seis) meses, conforme especificações constantes no Edital do Pregão Eletrônico nº
+    04/2024 e seus anexos.
+    6.1.3 Qualificação técnica
+    6.1.3.1. A licitante deverá apresentar Atestado(s) de capacidade técnica de
+    fornecido(s) por pessoa jurídica de direito público ou privado, que comprove(m) que a
+    licitante já forneceu o serviço especializado no fornecimento de créditos de nuvem
+    pública Google Cloud Plataform (GCP) pelo período mínimo de 12 meses.
+    6.1.3.2. Para fins da comprovação de aptidão para execução de serviço de
+    complexidade tecnológica e operacional equivalente ou superior com o objeto desta
+    contratação, os atestados deverão dizer respeito a contratos executados com vigência
+    mínima de doze meses, por meio da apresentação de certidões ou atestados, por
+    pessoas jurídicas de direito público ou privado, com as seguintes características
+    mínimas:
+    a) Demonstração de provimento de subscrições de serviços Google Cloud;
+    b) Demonstração de execução de pelo menos um serviço especializado na
+    plataforma Google Cloud Platform,
+    c) O gerenciamento e a operação de instâncias de máquinas virtuais e de
+    instâncias de banco de dados em ambiente de nuvem pública Google
+    Cloud;
+    g) Migração de pelo menos 1 (um) banco de dados legado, de ambiente on-
+    premise, para um banco de dados gerenciado nativo de um provedor de
+    nuvem pública.
+    h) Volume mínimo de 1.000.000 (um milhão) de unidades de consumo em
+    nuvem ou moeda equivalente (R$, USN, CSN, USIN).
+    Deverá ser
+    comprovada execução do montante mínimo informado, sendo vetadas
+    apresentações apenas de valores contratuais totais.
+    6.1.5. Caso não seja o fabricante, a LICITANTE deverá apresentar documento
+    que comprove estar autorizada e credenciada a comercializar os produtos
+    disponíveis da Google Cloud Plataform (GCP), sendo um "premier partner".
+    6.1.6. Declaração que detém a quantidade mínima e profissionais em seu quadro
+    ou prestadores de serviço certificados com o objetivo de garantir o mínimo de
+    qualidade na prestação de serviços em relação ao provedor de nuvem
+    oferecido (comprovada na assinatura do contrato): no mínimo 2 (dois)
+    profissionais com certificação de arquitetura em nuvem;
     """
     
     # Simular dados de ativos da planilha (para testes sem acessar a API real repetidamente)
     # Em um ambiente real, você carregaria isso de google_sheets_integrator
     try:
-        if os.path.exists(SERVICE_ACCOUNT_FILE):
-            ativos_df_test = get_google_sheet_data(GOOGLE_SHEET_URL, GOOGLE_SHEET_TAB_NAME, SERVICE_ACCOUNT_FILE)
+        # No ambiente de produção do Cloud Run, SERVICE_ACCOUNT_FILE não é usado.
+        # Para testes locais, se você não usar `gcloud auth application-default login`,
+        # pode mockar os dados.
+        if os.getenv("GOOGLE_APPLICATION_CREDENTIALS"): # Verifica se a variável está definida para teste local com arquivo
+            ativos_df_test = get_google_sheet_data(GOOGLE_SHEET_URL, GOOGLE_SHEET_TAB_NAME)
         else:
-            print("AVISO: SERVICE_ACCOUNT_FILE não encontrado. Usando DataFrame de teste mock.")
+            print("AVISO: Usando DataFrame de teste mock para ai_analyzer.py. Para teste real, use credenciais ou execute em ambiente GCP.")
             # Mock de dados se o arquivo de serviço não estiver disponível
             ativos_data = {
                 'ID': [1, 2, 3],
