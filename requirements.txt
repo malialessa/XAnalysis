@@ -1,0 +1,16 @@
+# requirements.txt
+fastapi
+uvicorn
+python-multipart # Para upload de arquivos com FastAPI
+google-cloud-storage # Para interagir com Firebase Storage (que é um bucket GCS)
+google-cloud-aiplatform # Para Vertex AI
+google-auth-oauthlib # Para autenticação com Google Sheets API
+google-api-python-client # Para Google Sheets API
+gspread # Biblioteca mais fácil para Google Sheets
+oauth2client # Necessário para gspread.service_account
+pymupdf
+Pillow # Dependência do pytesseract
+pytesseract # Para OCR, caso o PDF seja escaneado
+pandas # Para manipulação de dados
+scikit-learn # Para cosine_similarity se não usar FAISS
+numpy
